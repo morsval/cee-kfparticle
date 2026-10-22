@@ -84,6 +84,11 @@ class CeeTpcTrack : public FairMultiLinkedData
   void SetIsFitConverged(Bool_t converged) { fIsFitConverged = converged; }
 
   // NEW: Persisted vertex seed state so VertexingTask can skip refits
+  // pos is normally the measured track's DCA point to the reconstructed PV.
+  // mom and the full Cartesian 6x6 cov must describe that SAME reference.
+  // This setter stores its arguments; it does not perform DCA extrapolation.
+  // CeeV0Lite >=0.6.5 defaults to reanchoring magnetic inputs at the current
+  // event PV DCA in memory, including momentum and full covariance transport.
   void SetVertexSeed(const TVector3& pos, const TVector3& mom, const TMatrixDSym& cov);
   Bool_t HasVertexSeed() const { return fHasVertexSeed; }
   const TVector3& GetVertexSeedPos() const { return fVertexSeedPos; }
@@ -161,7 +166,7 @@ class CeeTpcTrack : public FairMultiLinkedData
   double fHitSigmaZ;                     // Hit error in Z
   Bool_t fIsFitConverged;                // Track fit convergence status
   Bool_t fHasVertexSeed;                 // Whether vertex seed info is filled
-  TVector3 fVertexSeedPos;               // Seed position (typically DCA)
+  TVector3 fVertexSeedPos;               // Seed position (normally track--PV DCA)
   TVector3 fVertexSeedMom;               // Seed momentum at that point
   double fVertexSeedCov[6][6];           // 6x6 covariance in (pos,mom)
 

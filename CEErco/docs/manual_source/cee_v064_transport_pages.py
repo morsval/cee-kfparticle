@@ -1,0 +1,42 @@
+page('v0.6.4 的保守优化范围',
+ P('本节记录 v0.6.4 的优化。该版本保留几何求解、共同顶点拟合及其误差传播定义，只减少确定性的重复运算。固定路径输运的解析导数直接来自已有运动公式；协方差仍传播完整的位置、动量及交叉项。'),
+ table([['计算层','v0.6.3','v0.6.4'],['固定路径<br/>PropagateState','6 个输入分量分别 ± 扰动，构造 6×6 导数','对同一运动公式直接求导，省去 12 次参数输运'],['POCA 输运','中心求解一次，再为导数求解 12 次','完整保留原数值导数及路径重新求解'],['协方差乘法','四重循环累加 J C Jᵀ','先算 J C，再乘 Jᵀ，复用中间乘积'],['POCA 临时数组','随着候选加入扩展容量','预留少量容量，避免反复分配'],['共同 SV 与母粒子','SV 迭代、Kalman 更新、24 次误差重拟合','流程、阈值、cut 与拟合定义保持原版']] ,[102,191,206]),
+ Spacer(1,10),
+ P('共同 SV 拟合中的 POCA 输运仍包含 13 次求解；新增的参考点转换是不同映射，只需一次名义求解。磁场下仍需更新 SV 并重新输运；零场 TOF 外层仍需让动量、衰变时刻和顶点自洽。'),
+ note('为什么没有一并替换 POCA 导数','全样本试验中，隐式 POCA 导数会让少数候选的误差估计明显变化。按照本次保守要求，该方案已撤回，交付代码中没有启用或保留这一实验分支。'),
+ src='[T] PropagateState、TransportToClosestApproach、FixedPathJacobian、PropagateCovariance。')
+
+page('固定路径解析导数怎样计算',
+ P('把输入记为 a=(r,p)，路径 s 固定。定义 p=|p|、k=0.00299792458 qBy、θ=ks/p。CEE 的 s 为有符号三维弧长，单位 cm；By 的单位为 T。状态中心值仍使用原来的螺旋线公式。'),
+ eq(r'F=\left.\frac{\partial f(a,s)}{\partial a}\right|_s,\qquad\frac{\partial\theta}{\partial p_j}=-\frac{\theta p_j}{p^2}',18),
+ P('例如，x 方向的位置与动量为'),
+ eq(r'x^{\prime}=x+\frac{p_x\sin\theta-p_z(1-\cos\theta)}{k}',18),
+ eq(r'p_x^{\prime}=p_x\cos\theta-p_z\sin\theta',18),
+ P('除显式的 pₓ、p_z 外，θ 也依赖输入动量大小。对它们一起求导，得到'),
+ eq(r'\frac{\partial x^{\prime}}{\partial p_j}=\frac{\delta_{xj}\sin\theta-\delta_{zj}(1-\cos\theta)}{k}+\frac{p_x^{\prime}}{k}\frac{\partial\theta}{\partial p_j}',16),
+ eq(r'\frac{\partial p_x^{\prime}}{\partial p_j}=\delta_{xj}\cos\theta-\delta_{zj}\sin\theta-p_z^{\prime}\frac{\partial\theta}{\partial p_j}',16),
+ P('其余分量同理。零场或中性输入使用直线分支：F<sub>rp</sub>=(s/p)(I−uuᵀ)，F<sub>rr</sub>=F<sub>pp</sub>=I，F<sub>pr</sub>=0。极小动量或直线／螺旋线分支切换附近保留原数值导数。'),
+ note('适用范围','此处 s 固定。TransportToClosestApproach 的路径随输入变化，所以不能把本页 F 直接用于 POCA 协方差。交付版仍在每次扰动后重新求 POCA，包含路径导数。'),
+ src='[T] FixedPathJacobian、PropagateParameters；输入动量为物理动量，含电荷的刚度需先转换。')
+
+page('矩阵计算、回退与版本切换',
+ P('协方差公式仍是 C′=J C Jᵀ。旧四重循环为每个输出元素重复计算 J 与 C 的部分乘积；本版把它拆成两个六维矩阵乘法：'),
+ eq(r'A=JC,\qquad C^{\prime}=AJ^T',22),
+ P('六维矩阵中，原四重累加有 6⁴=1296 个求和项；拆开后为 2×6³=432 项，并避免重复相乘。位置—动量交叉项完整保留，没有把协方差近似成对角矩阵。浮点累加顺序不同，结果允许有舍入级差异。'),
+ P('输运过程噪声仍在矩阵传播之后按原配置加入，随后对称化。母粒子最终 24 次重拟合与非零过程噪声的现有限制沿用原版。'),
+ sub('固定路径导数的参考开关'),
+ code('TransportConfig cfg;\ncfg.useAnalyticFixedPathJacobian = false; // original fixed-path FD'),
+ P('默认值为 true。false 仅恢复固定路径的中心差分，不会改变 POCA 求解方式；矩阵乘法优化始终生效。该开关在 C++ 配置中设置，该解析导数开关没有命令行参数。'),
+ sub('升级方式'),
+ P('TransportConfig 新增一个字段，升级时清理并重编 CeeV0Lite 与 CeeV0Analysis，避免新旧对象文件混用。输出树格式仍为 6；运行元数据新增 analyticFixedPathJacobian，并当时标记 ceeV0LiteVersion=0.6.4；当前交付标记 0.6.5。'),
+ note('没有改变的物理含义','S 仍是 L/|p| 飞行参数。保存 S、PV 约束、S/σS 选择仍是不同操作。优化不会自动增加材料修正、质量约束或探测器性能。'),
+ src='[T] PropagateCovariance、TransportConfig；[A] CeeV0Analyzer 元数据；MIGRATION_0_6_4.md。')
+
+page('输运优化的对照验证',
+ P('以下为 v0.6.4 的历史基准：比较 v0.6.3 与 v0.6.4，使用同一机器、相同编译优化和相同输入。时间结果对应合成样本的核心拟合，不包含 ROOT 文件 I/O，也不是与 STAR 完整软件的运行速度比较。'),
+ table(VALIDATION_ROWS,[252,247]),
+ Spacer(1,10),
+ P(VALIDATION_TEXT),
+ P('另有 1,200 组固定种子输运检查，覆盖零场、正负 By、正负电荷、中性输入、低动量和非对角协方差。固定路径中心值逐项一致，最大尺度化协方差差为 1.30×10⁻⁸。POCA 仍采用相同差分求导，开启或关闭固定路径开关对其结果没有影响。'),
+ note('撤回的试验与当前结论','隐式 POCA 导数试验在 109,706 个输入中改变了 6 个拟合状态和 2 个最终选择结果，少数质量误差变化较大，因此没有交付。最终版本的验证结果见上表。真实 CEE/FairRoot 链接、ROOT I/O 和探测器级闭合仍需实验环境验证。'),
+ src='v0.6.4_review/comparison.json；tests/test_transport_jacobian.cxx；核心与分析层测试日志。')

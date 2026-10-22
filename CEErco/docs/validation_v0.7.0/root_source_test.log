@@ -1,0 +1,11 @@
+make: Entering directory '<checkout>/CEErco/CeeV0Analysis'
+mkdir -p /tmp/cee_kfp_source_test
+rootcling -f /tmp/cee_kfp_source_test/dictionary.cxx -Itests/root_fixtures \
+  tests/root_fixtures/CeeRootTestTypes.h tests/root_fixtures/LinkDef.h
+g++ $(root-config --cflags) -std=c++17 -O2 -I. -Itests/root_fixtures -Iinclude -I../CeeV0Lite/include \
+  src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx src/CeeKFParticleRootSource.cxx src/CeeV0AnalysisAlgorithms.cxx \
+  src/CeeV0AnalysisConfig.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx /tmp/cee_kfp_source_test/dictionary.cxx \
+  tests/test_root_source.cxx $(root-config --libs) -o /tmp/cee_kfp_source_test/test
+/tmp/cee_kfp_source_test/test
+ROOT source fixture: chained file/list, original IDs, subset, Finder integration, overflow and per-file missing-branch checks passed
+make: Leaving directory '<checkout>/CEErco/CeeV0Analysis'

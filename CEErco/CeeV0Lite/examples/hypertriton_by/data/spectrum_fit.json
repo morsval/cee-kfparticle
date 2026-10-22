@@ -1,0 +1,8 @@
+{
+  "T_GeV": 0.27969028278142,
+  "A": 0.00043058626796910887,
+  "max_log10_residual": 0.0001222395114632846,
+  "source": "https://arxiv.org/pdf/2110.09513v3",
+  "figure": "Supplemental Fig. 4(a), red series, 0-10%, -0.25<y<0",
+  "method": "PDF vector-coordinate extraction of the published mT exponential fit, not a numerical table; amplitude not used for event normalization"
+}
