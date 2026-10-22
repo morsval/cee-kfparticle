@@ -69,6 +69,16 @@ bool TransportToClosestApproach(const TrackState& input,
                                 double& signedPathCm,
                                 ClosestApproachResult* diagnostics = 0);
 
+// Reuse the already computed POCA derivative for 7D energy cross-covariance.
+bool TransportToClosestApproach(const TrackState& input,
+                                const Vec3& pointCm,
+                                double magneticFieldByTesla,
+                                const TransportConfig& config,
+                                TrackState& output,
+                                double& signedPathCm,
+                                ClosestApproachResult* diagnostics,
+                                double (*stateJacobian)[6]);
+
 } // namespace CeeV0Lite
 
 #endif

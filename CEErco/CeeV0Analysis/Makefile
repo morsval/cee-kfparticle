@@ -34,7 +34,7 @@ endif
 
 ANALYSIS_SOURCES := src/CeeV0AnalysisAlgorithms.cxx \
   src/CeeV0AnalysisConfig.cxx src/CeeV0Analyzer.cxx src/main.cxx \
-  src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx \
+  src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx \
   src/CeeKFParticleObservables.cxx src/CeeKFParticleRootSource.cxx src/CeeKFParticleRootWriter.cxx
 LITE_SOURCES := $(LITEDIR)/src/CeeV0LiteProductionVertex.cxx \
   $(LITEDIR)/src/CeeV0LiteMath.cxx \
@@ -94,7 +94,7 @@ syntax-test:
 field-cli-test:
 	python3 tests/test_field_cli.py
 
-check: unit-test config-test syntax-test field-cli-test maker-test
+check: unit-test config-test syntax-test field-cli-test maker-test channels-test
 
 clean:
 	rm -rf $(OBJDIR) $(TARGET) libCeeKFParticleAnalysis.so
@@ -102,7 +102,7 @@ clean:
 -include $(DEPFILES)
 
 .PHONY: maker-test root-writer-test shared
-MAKER_SOURCES := src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx
+MAKER_SOURCES := src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx
 maker-test:
 	$(CXX) -std=c++11 -O2 -Wall -Wextra -Wpedantic -Iinclude -I$(LITEDIR)/include \
 	  $(MAKER_SOURCES) $(LITE_SOURCES) tests/test_maker.cxx -o /tmp/test_cee_kfp_maker
@@ -125,3 +125,18 @@ root-source-test:
 	  src/CeeV0AnalysisConfig.cxx $(LITE_SOURCES) /tmp/cee_kfp_source_test/dictionary.cxx \
 	  tests/test_root_source.cxx $$(root-config --libs) -o /tmp/cee_kfp_source_test/test
 	/tmp/cee_kfp_source_test/test
+
+.PHONY: channels-test
+channels-test:
+	$(CXX) -std=c++11 -O2 -Wall -Wextra -Wpedantic -Iinclude -I$(LITEDIR)/include $(MAKER_SOURCES) $(LITE_SOURCES) tests/test_channels.cxx -o /tmp/test_cee_kfp_channels
+	/tmp/test_cee_kfp_channels
+
+.PHONY: channel-writer-test
+channel-writer-test:
+	$(CXX) $$(root-config --cflags) -std=c++17 -O2 -Iinclude -I$(LITEDIR)/include $(MAKER_SOURCES) $(LITE_SOURCES) tests/test_channel_writer.cxx $$(root-config --libs) -o /tmp/test_cee_channel_writer
+	/tmp/test_cee_channel_writer
+
+.PHONY: channels-pull-test
+channels-pull-test:
+	$(CXX) -std=c++11 -O2 -Iinclude -I$(LITEDIR)/include $(MAKER_SOURCES) $(LITE_SOURCES) tests/test_channels_pull.cxx -o /tmp/test_cee_channels_pull
+	/tmp/test_cee_channels_pull

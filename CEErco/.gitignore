@@ -11,3 +11,5 @@
 /CeeV0Lite/examples/**/results/
 /docs/manual_source/cee_rewrite_page_map.json
 /docs/manual_source/output/
+
+/docs/manual_source/book_page_map.json

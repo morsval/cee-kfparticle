@@ -696,13 +696,23 @@ bool ReanchorAtClosestApproach(const TrackState& input,
   return true;
 }
 
+bool TransportToClosestApproach(const TrackState& input, const Vec3& pointCm,
+                                double magneticFieldByTesla, const TransportConfig& config,
+                                TrackState& output, double& signedPathCm,
+                                ClosestApproachResult* diagnostics)
+{
+  return TransportToClosestApproach(input, pointCm, magneticFieldByTesla, config,
+                                    output, signedPathCm, diagnostics, 0);
+}
+
 bool TransportToClosestApproach(const TrackState& input,
                                 const Vec3& pointCm,
                                 double magneticFieldByTesla,
                                 const TransportConfig& config,
                                 TrackState& output,
                                 double& signedPathCm,
-                                ClosestApproachResult* diagnostics)
+                                ClosestApproachResult* diagnostics,
+                                double (*stateJacobian)[6])
 {
   ClosestApproachResult result;
   if (!FindClosestApproachParameters(input, pointCm, magneticFieldByTesla,
@@ -768,6 +778,8 @@ bool TransportToClosestApproach(const TrackState& input,
   }
   Symmetrize(propagatedCovariance);
   output.covariance = propagatedCovariance;
+  if (stateJacobian)
+    for (int i=0;i<6;++i) for (int j=0;j<6;++j) stateJacobian[i][j]=jacobian[i][j];
   if (diagnostics) *diagnostics = result;
   return true;
 }

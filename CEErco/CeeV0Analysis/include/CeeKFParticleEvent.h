@@ -13,13 +13,14 @@ struct AnalysisTrack {
     dEdx(std::numeric_limits<double>::quiet_NaN()),
     nSigmaProton(std::numeric_limits<double>::quiet_NaN()),
     nSigmaPion(std::numeric_limits<double>::quiet_NaN()),
+    nSigmaKaon(std::numeric_limits<double>::quiet_NaN()),
     tofMass2GeV2(std::numeric_limits<double>::quiet_NaN()) {}
   CeeV0Lite::TrackInput input;
   int nHits;
   bool fitConverged;
   double chi2Ndf, dEdx;
   // Optional calibrated PID. Missing values are NaN, never assumed to be 0.
-  double nSigmaProton, nSigmaPion, tofMass2GeV2;
+  double nSigmaProton, nSigmaPion, nSigmaKaon, tofMass2GeV2;
 };
 struct AnalysisEvent {
   AnalysisEvent() : eventId(0), inputTrackCount(0) {}

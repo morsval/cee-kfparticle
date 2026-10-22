@@ -4,7 +4,7 @@
 #include <set>
 namespace CeeV0Analysis {
 CeeKFParticleAnalysisMaker::CeeKFParticleAnalysisMaker(const CeeV0Lite::FinderConfig& c)
-  : fInterface(c), fEventAccepted(false) {}
+  : fInterface(c), fChannels(c), fEventAccepted(false) {}
 bool CeeKFParticleAnalysisMaker::AcceptEvent(const AnalysisEvent& e) const {
   return !fEventSelector || fEventSelector(e);
 }
@@ -22,7 +22,7 @@ bool CeeKFParticleAnalysisMaker::AcceptMother(const CeeV0Lite::Candidate& c,cons
   return !fMotherSelector || fMotherSelector(c,e);
 }
 bool CeeKFParticleAnalysisMaker::Make(const AnalysisEvent& e,std::string& error) {
-  error.clear(); fEventAccepted=false; fSelectedTracks.clear(); fCandidates.clear(); fInterface.Clear();
+  error.clear(); fEventAccepted=false; fSelectedTracks.clear(); fCandidates.clear(); fInterface.Clear(); fChannels.Clear();
   ++fStatistics.eventsRead;
   if (fTrackCuts.minimumHits<0 || std::isnan(fTrackCuts.maximumChi2Ndf) || fTrackCuts.maximumChi2Ndf<0.) {
     error="invalid Maker track cuts"; return false;
@@ -72,5 +72,28 @@ bool CeeKFParticleAnalysisMaker::Run(CeeKFParticleEventSource& source,CeeKFParti
   const bool finished=sink.Finish(finishError);
   if (ok && !finished) error=finishError;
   return ok && finished;
+}
+}
+
+namespace CeeV0Analysis {
+bool CeeKFParticleAnalysisMaker::MakeChannels(const AnalysisEvent& e,std::string& error) {
+  error.clear();fEventAccepted=false;fChannels.Clear();fCandidates.clear();fSelectedTracks.clear();fInterface.Clear();
+  ++fStatistics.eventsRead;
+  if(fTrackCuts.minimumHits<0 || std::isnan(fTrackCuts.maximumChi2Ndf) || fTrackCuts.maximumChi2Ndf<0) {error="invalid Maker track cuts";return false;}
+  if(!AcceptEvent(e))return true;
+  std::vector<std::size_t> indices,selected;
+  if(fTrackListSelector)indices=fTrackListSelector(e);
+  else for(std::size_t i=0;i<e.tracks.size();++i)indices.push_back(i);
+  std::set<std::size_t> seen;
+  for(auto i:indices){if(i>=e.tracks.size()||!seen.insert(i).second){error="invalid/duplicate track index";return false;}if(AcceptTrack(e.tracks[i],e))selected.push_back(i);}
+  if(!fChannels.Reconstruct(e,selected,error))return false;
+  for(auto i:selected)fSelectedTracks.push_back(e.tracks[i].input);
+  fEventAccepted=true;++fStatistics.eventsAccepted;fStatistics.tracksSupplied+=e.tracks.size();fStatistics.tracksSelected+=selected.size();
+  fStatistics.mothersReconstructed+=fChannels.GetCandidates().size();fStatistics.mothersAccepted+=fChannels.GetCandidates().size();return true;
+}
+bool CeeKFParticleAnalysisMaker::RunChannels(CeeKFParticleEventSource& source,CeeKFParticleChannelSink& sink,std::string& error,long long maximumEvents) {
+  error.clear();if(maximumEvents< -1){error="invalid maximumEvents";return false;}if(!sink.Begin(error))return false;bool ok=true;
+  try {for(long long i=0;maximumEvents<0||i<maximumEvents;++i){AnalysisEvent e;auto status=source.Next(e,error);if(status==CeeKFParticleEventSource::kEnd)break;if(status==CeeKFParticleEventSource::kError||!MakeChannels(e,error)){ok=false;break;}if(fEventAccepted&&!sink.Write(e,GetChannelCandidates(),error)){ok=false;break;}}}catch(const std::exception& ex){error=ex.what();ok=false;}
+  std::string finishError;bool finished=sink.Finish(finishError);if(ok&&!finished)error=finishError;return ok&&finished;
 }
 }

@@ -1,9 +1,11 @@
-# v0.7.0 中文手册源稿
+# v0.7.0 用户与算法手册
 
-`rewrite_cee_manual_v070.py` 生成 129 页 PDF。新增用户分析层为第 5-24 页，其中第 14-23 页是 89 个可选标量表，第 24 页补充完整状态和诊断。原物理原理、TOF 迭代、Kalman 更新、带磁场输运与 PV 状态章节保留。
+当前入口为 `build_user_book_v070.py`，按书籍工作流组织：软件结构、编译、输入、用户分析、衰变配置、macro/ROOT、数据与 cut 表、共同基础、零场 TOF、有磁 tracking、PV/S、验证、附录。
+
+包含自动页码目录、章节编号和 PDF 书签；保留经核对的原推导与示意图，连续排版，不再按版本追加章节。`book_user_sections.py` 是新的使用部分。旧 `rewrite_cee_manual_v070.py` 是兼容图文素材来源。
 
 ```bash
-CEE_MANUAL_OUTPUT=/absolute/path/manual.pdf python3 rewrite_cee_manual_v070.py
+CEE_MANUAL_OUTPUT=/absolute/path/manual.pdf python3 build_user_book_v070.py
 ```
 
-目录应保持在 `CEErco/docs/manual_source`，以便计算源码指纹并读取相邻的 CandidateVariables JSON。依赖 Python reportlab、matplotlib、fontTools；字体子集和 OFL 随目录提供。`cee_rewrite_page_map.json` 为构建产物，记录实际页码。
+依赖 reportlab、matplotlib、fontTools；附字体子集和 OFL。新增中文文字时需要重新生成覆盖这些字符的字体子集。`book_page_map.json` 记录实际章节页码。

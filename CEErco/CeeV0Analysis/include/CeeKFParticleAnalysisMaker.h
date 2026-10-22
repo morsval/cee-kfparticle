@@ -1,6 +1,7 @@
 #ifndef CEE_KFP_ANALYSIS_MAKER_H
 #define CEE_KFP_ANALYSIS_MAKER_H
 #include "CeeKFParticleEvent.h"
+#include "CeeKFParticleChannels.h"
 #include "CeeKFParticleInterface.h"
 #include <functional>
 namespace CeeV0Analysis {
@@ -43,6 +44,11 @@ class CeeKFParticleAnalysisMaker {
   virtual unsigned IdentifyTrack(const AnalysisTrack&,const AnalysisEvent&) const;
   virtual bool AcceptMother(const CeeV0Lite::Candidate&,const AnalysisEvent&) const;
   bool Make(const AnalysisEvent& event,std::string& error);
+  // Explicit generic-channel entry point, using the same event/track selectors.
+  CeeKFParticleChannels& Channels() { return fChannels; }
+  bool MakeChannels(const AnalysisEvent&,std::string&);
+  bool RunChannels(CeeKFParticleEventSource&,CeeKFParticleChannelSink&,std::string&,long long maximumEvents=-1);
+  const std::vector<ChannelCandidate>& GetChannelCandidates() const { return fChannels.GetCandidates(); }
   bool Run(CeeKFParticleEventSource& source,CeeKFParticleCandidateSink& sink,
            std::string& error,long long maximumEvents=-1);
   const std::vector<CeeV0Lite::Candidate>& GetCandidates() const { return fCandidates; }
@@ -52,6 +58,7 @@ class CeeKFParticleAnalysisMaker {
   void ResetStatistics() { fStatistics=MakerStatistics(); }
  private:
   CeeKFParticleInterface fInterface;
+  CeeKFParticleChannels fChannels;
   MakerTrackCuts fTrackCuts;
   MakerStatistics fStatistics;
   EventSelector fEventSelector;
