@@ -86,7 +86,9 @@ ProjectionTrack MakeProjectionTrack(const CeeV0Lite::CeeTrackReferenceState& ref
 double TrackChi2Ndf(const CeeTpcTrack& track)
 {
   const double direct = track.GetFitChi2Ndf();
-  if (std::isfinite(direct) && direct >= 0.) return direct;
+  // A stored zero can mean the upstream chi2/NDF field was never filled.
+  // Prefer a valid raw chi2/NDF fallback in that case (also handles true zero).
+  if (std::isfinite(direct) && direct > 0.) return direct;
   const double ndf = track.GetFitNdf();
   const double chi2 = track.GetFitChi2();
   if (std::isfinite(ndf) && ndf > 0. && std::isfinite(chi2) && chi2 >= 0.)

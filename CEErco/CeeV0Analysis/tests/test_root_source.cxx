@@ -32,7 +32,7 @@ int main(){
   {
     CeeKFParticleRootSource source(config);assert(source.Open(error));
     assert(source.Next(e,error)==CeeKFParticleEventSource::kEvent && e.tracks.size()==2 && e.eventId==0);
-    assert(e.tracks[0].input.id==0 && e.tracks[0].dEdx==7. && std::isnan(e.tracks[0].nSigmaProton));
+    assert(e.tracks[0].input.id==0 && e.tracks[0].dEdx==7. && e.tracks[0].chi2Ndf==1. && std::isnan(e.tracks[0].nSigmaProton));
     CeeKFParticleAnalysisMaker maker(config.finder);
     maker.SetPIDSelector([](const AnalysisTrack& t,const AnalysisEvent&){return t.input.charge>0?kProtonHypothesis:kPionHypothesis;});
     assert(maker.Make(e,error));assert(maker.GetCandidates().size()==1);

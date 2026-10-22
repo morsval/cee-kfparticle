@@ -16,7 +16,7 @@ class CeeTpcTrack : public TObject {
   double GetX()const{return pos.X();} double GetY()const{return pos.Y();} double GetZ()const{return pos.Z();}
   double GetPx()const{return mom.X();} double GetPy()const{return mom.Y();} double GetPz()const{return mom.Z();}
   double GetFitCharge()const{return charge;} double GetFitChi2()const{return 5.;}
-  double GetFitChi2Ndf()const{return 1.;} double GetFitNdf()const{return 5.;}
+  double GetFitChi2Ndf()const{return 0.;} double GetFitNdf()const{return 5.;}
   int GetnHitsFit()const{return hits;} double GetdEdx()const{return 7.;}
   ClassDef(CeeTpcTrack,1);
 };
