@@ -1,0 +1,8 @@
+make: Entering directory '<checkout>/CEErco/CeeV0Analysis'
+g++ $(root-config --cflags) -std=c++17 -O2 -Iinclude -I../CeeV0Lite/include \
+  src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx src/CeeKFParticleRootWriter.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx \
+  tests/test_root_writer.cxx $(root-config --libs) -o /tmp/test_cee_kfp_writer
+/tmp/test_cee_kfp_writer
+Error in <TFile::TFile>: file /tmp/cee_kfp_writer_53.root already exists
+Real ROOT writer: schema, custom columns, int64 IDs, NaN reset, covariance round trip, overwrite protection passed
+make: Leaving directory '<checkout>/CEErco/CeeV0Analysis'

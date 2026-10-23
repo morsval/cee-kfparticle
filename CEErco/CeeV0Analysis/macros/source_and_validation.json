@@ -1,0 +1,10 @@
+{
+  "version": "0.6.5",
+  "date": "2026-10-22",
+  "default_magnetic_reference": "pv-dca",
+  "macro_cpp_compile": true,
+  "dry_run": true,
+  "real_cli_parser": true,
+  "actual_root_io_test": false,
+  "note": "No ROOT/FairRoot installation in validation environment."
+}

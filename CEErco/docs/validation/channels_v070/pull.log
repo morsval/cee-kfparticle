@@ -1,0 +1,5 @@
+make: Entering directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'
+g++ -std=c++11 -O2 -Iinclude -I../CeeV0Lite/include src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx tests/test_channels_pull.cxx -o /tmp/test_cee_channels_pull
+/tmp/test_cee_channels_pull
+toy Lambda: accepted=240/240, mass pull mean=0.125775, width=0.999246, mean chi2=0.949843
+make: Leaving directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'

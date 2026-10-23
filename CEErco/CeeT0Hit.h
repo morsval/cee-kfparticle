@@ -23,8 +23,9 @@
        ** @param[in] detID   Rpc Id. 
        ** @param[in] pos     hit position. 
        ** @param[in] dpos    hit position error.
-       ** @param[in] t0[2]  Time Over Threshold [ps].
-       ** @param[in] t0[0]  hit time 
+       ** @param[in] t0[1]  Raw hit time. Its persisted unit and calibration
+       **                   must be supplied by the detector configuration;
+       **                   analysis code must not infer it from this class.
        **/
 class CeeT0Hit : public FairHit
 {

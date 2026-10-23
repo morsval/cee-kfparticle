@@ -1,0 +1,8 @@
+Beno actual-EDM ROOT roundtrip, zero-field Lambda mass=1.11568, sigmaM=0.00337957; shared-T0, covariance/sign, IDs, subset, list, matching and failure checks passed
+Processing macros/runCeeKFParticle.C("/tmp/cee_beno_880.root","/workspace/scratch/12111ab32be0/beno_zero_20261023/macro_mothers.root","benodst","tof",0.,-1,true,true)...
+Beno tracks accepted=2 invalid geometry=0 no usable saved match=0 shared match rejected=0
+CEE v0.7.0: events=1, selected tracks=2, mothers=1 -> /workspace/scratch/12111ab32be0/beno_zero_20261023/macro_mothers.root
+Macro ROOT readback: Lambda mass, daughter IDs and Beno configuration passed
+Processing macros/runCeeChannels.C("/tmp/cee_beno_88tracking.root","/workspace/scratch/12111ab32be0/beno_zero_20261023/macro_channels.root",0.5,"lambda",false,-1,"benodst")...
+MACRO OUTPUT /workspace/scratch/12111ab32be0/beno_zero_20261023/macro_mothers.root
+Beno tracking channel macro completed

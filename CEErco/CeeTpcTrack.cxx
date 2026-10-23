@@ -16,6 +16,10 @@ CeeTpcTrack::CeeTpcTrack()
       fnHitsMax(0), fnHitsDedx(0), fHitSigmaX(0.4), fHitSigmaY(0.5), fHitSigmaZ(0.2),
       fIsFitConverged(kTRUE), fHasVertexSeed(kFALSE)
 {
+    for(int i = 0; i < 5; ++i) {
+        FitParameter[i] = 0.;
+        for(int j = 0; j < 5; ++j) Fitcov[i][j] = 0.;
+    }
     fVertexSeedPos.SetXYZ(0.,0.,0.);
     fVertexSeedMom.SetXYZ(0.,0.,0.);
     for(int i = 0; i < 6; ++i) {
@@ -39,7 +43,8 @@ CeeTpcTrack::CeeTpcTrack(double x_, double y_, double z_,
  fFitChi2(Fitchi2_),fFitChi2Ndf(0.),fFitNdf(0.),fdEdx(dEdx),
  fDcaX(0.), fDcaY(0.), fDcaZ(0.),
  fEvent(EventID),fMCTrackId(MCTrackID),fSector(Sector),fnHitsFit(nHitsFit),
- fnHitsMax(0), fnHitsDedx(0), fIsFitConverged(kTRUE),
+ fnHitsMax(0), fnHitsDedx(0), fHitSigmaX(0.4), fHitSigmaY(0.5), fHitSigmaZ(0.2),
+ fIsFitConverged(kTRUE),
  fHasVertexSeed(kFALSE)  // Vertex seed not set until explicitly stored
 {
   // Initialize FitParameter and Fitcov arrays to zero
@@ -64,14 +69,15 @@ CeeTpcTrack::CeeTpcTrack(double x_, double y_, double z_,
 
 
 CeeTpcTrack::CeeTpcTrack(double x_, double y_, double z_, double px_, double py_, double pz_,double Fitcharge_, double Fitchi2_, const double FitParameter_[5],const double Fitcov_[5][5],double Fitindex_, double FitTracklength_)
-: fIsFitConverged(kTRUE),
+: fFakeRatio(0.), fFitindex(Fitindex_), fFitTracklength(FitTracklength_),
+  fX(x_), fY(y_), fZ(z_), fPx(px_), fPy(py_), fPz(pz_),
+  fFitCharge(Fitcharge_), fFitChi2(Fitchi2_), fFitChi2Ndf(0.), fFitNdf(0.),
+  fdEdx(0.), fDcaX(0.), fDcaY(0.), fDcaZ(0.),
+  fEvent(0), fMCTrackId(-1), fSector(-1), fnHitsFit(0), fnHitsMax(0), fnHitsDedx(0),
+  fHitSigmaX(0.4), fHitSigmaY(0.5), fHitSigmaZ(0.2),
+  fIsFitConverged(kTRUE),
   fHasVertexSeed(kFALSE)
 {
-  fFitCharge = Fitcharge_;
-  fFitChi2 = Fitchi2_;           
-  fFitChi2Ndf = 0.0;
-  fFitNdf = 0.0;
-
   for(int i =0; i<5; i++) {FitParameter[i] = FitParameter_[i];};
 
   
@@ -81,25 +87,6 @@ CeeTpcTrack::CeeTpcTrack(double x_, double y_, double z_, double px_, double py_
 	{Fitcov[i][j] = Fitcov_[i][j];};
       }
   
-  fFitindex = Fitindex_;
-  fFitTracklength = FitTracklength_;
-  fnHitsMax = 0;
-  fnHitsDedx = 0;
-
-  // Initialize fFakeRatio (not provided in constructor parameters)
-  fFakeRatio = 0.0;
-
-  fX = x_;
-  fY = y_;
-  fZ = z_;
-  fPx = px_;
-  fPy = py_;
-  fPz = pz_;
-  fdEdx = 0.;
-  fDcaX = 0.;
-  fDcaY = 0.;
-  fDcaZ = 0.;
-
   fVertexSeedPos.SetXYZ(0.,0.,0.);
   fVertexSeedMom.SetXYZ(0.,0.,0.);
   for(int i = 0; i < 6; ++i) {

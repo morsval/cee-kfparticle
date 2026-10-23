@@ -11,6 +11,7 @@
  **/
 #include "CeeT0Hit.h"
 
+#include <cstring>
 
 #include <iostream>
 using std::cout;
@@ -21,6 +22,7 @@ using std::endl;
 CeeT0Hit::CeeT0Hit()
   : FairHit()
 {
+  m_t0[0] = 0.;
 }
 // -------------------------------------------------------------------------
 
@@ -47,4 +49,3 @@ void CeeT0Hit::Print(const Option_t* /*opt*/) const
 // -------------------------------------------------------------------------
 
 ClassImp(CeeT0Hit)
-

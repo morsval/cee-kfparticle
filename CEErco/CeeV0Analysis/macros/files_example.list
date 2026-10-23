@@ -1,0 +1,5 @@
+# Replace these with your own absolute ROOT file paths.
+# One file per line. No quotes and no end-of-line comments.
+/data/cee/reco_0001.root
+/data/cee/reco_0002.root
+/data/cee/reco_0003.root

@@ -1,0 +1,90 @@
+name,unit,stage,meaning,C++ expression,中文说明
+candidateType,1,identity,Candidate identity / original input track ID,c.type,母粒子 PDG 类型：3122、-3122、310
+trackId0,1,identity,Candidate identity / original input track ID,c.daughterId[0],daughter 0 的原始输入 track ID
+trackId1,1,identity,Candidate identity / original input track ID,c.daughterId[1],daughter 1 的原始输入 track ID
+daughterPdg0,1,identity,Candidate identity / original input track ID,c.daughterPdg[0],daughter 0 的质量假设 PDG
+daughterPdg1,1,identity,Candidate identity / original input track ID,c.daughterPdg[1],daughter 1 的质量假设 PDG
+massGeV,GeV/c^2,original,Original mother invariant mass,c.massGeV,原 7D 母粒子不变质量
+sigmaMassGeV,GeV/c^2,original,Propagated mass uncertainty,c.sigmaMassGeV,原 7D 质量误差
+daughterDcaCm,cm,original,Daughter-to-daughter DCA in common-vertex fit,c.daughterDcaCm,共同顶点拟合中的两条 daughter 相互 DCA
+geometricChi2,1,original,Common-vertex fit raw chi2,c.geometricChi2,共同 SV 拟合原始 chi2
+geometricNdf,1,original,Common-vertex fit NDF,c.geometricNdf,共同 SV 拟合自由度
+geometricChi2Ndf,1,original,Common-vertex chi2 / NDF,c.geometricChi2Ndf,共同 SV 拟合 chi2 / NDF
+topologicalChi2,1,original,Legacy geometric + PV compatibility chi2 (not 8D refit),c.topologicalChi2,原候选几何 chi2 + 原 PV 相容性 chi2
+topologicalNdf,1,original,Legacy geometric NDF + 2,c.topologicalNdf,原候选几何 NDF + 2
+topologicalChi2Ndf,1,original,Legacy combined chi2 / NDF,c.topologicalChi2Ndf,原候选合计 chi2 / NDF；不是 8D 副本
+primaryVertexConstraintChi2,1,original,Original mother PV compatibility chi2,c.primaryVertexConstraintChi2,原母粒子与 PV 相容性的纯 chi2
+primaryVertexConstraintNdf,1,original,Original mother PV compatibility NDF,c.primaryVertexConstraintNdf,原 PV 相容性检验自由度
+primaryVertexConstraintChi2Ndf,1,original,Original mother PV compatibility chi2 / NDF,c.primaryVertexConstraintChi2Ndf,原 PV 相容性 chi2 / NDF
+decayLengthCm,cm,original,Unsigned straight distance |SV-PV|,c.decayLengthCm,约束前无符号直线距离 |SV-PV|
+sigmaDecayLengthCm,cm,original,Uncertainty of original straight decay length,c.sigmaDecayLengthCm,上述直线长度的传播误差
+decayLengthSignificance,1,original,Original unsigned L / sigmaL,c.decayLengthSignificance,约束前无符号直线 L / sigmaL
+pointingCosine,1,original,cos(angle of SV-PV and mother momentum),c.pointingCosine,SV-PV 与原母粒子动量的夹角余弦
+DcaProton,cm,original,3D DCA of proton/antiproton input state to PV,DcaProton(c),质子或反质子输入 track 到 PV 的三维 DCA
+DcaPion,cm,original,3D DCA of the unique pion input state to PV,DcaPion(c),唯一 pion 输入 track 到 PV 的三维 DCA
+Chi2PrimaryProton,1,original,Proton/antiproton raw chi2 to PV (not sqrt),Chi2PrimaryProton(c),质子或反质子到 PV 的原始 chi2
+Chi2PrimaryPion,1,original,Unique pion raw chi2 to PV (not sqrt),Chi2PrimaryPion(c),唯一 pion 到 PV 的原始 chi2
+motherDcaToPvCm,cm,original,"Neutral original mother line DCA to PV; derived, no refit","MotherDca(c,e)",原中性母粒子直线到 PV 的三维 DCA（派生量）
+decayTimeNs,ns,original,Estimated decay time for TOF fixed-point loop,c.decayTimeNs,零场 TOF 自洽解中的衰变时刻
+daughterDcaToPv0Cm,cm,original,Input daughter state 3D DCA to PV,c.daughterDcaToPvCm[0],指定 daughter 输入状态到 PV 的三维 DCA
+daughterChi2FromPv0,1,original,Input daughter raw chi2 to PV,c.daughterChi2FromPv[0],指定 daughter 到 PV 的原始 chi2
+daughterPvSignificance0,1,original,sqrt(daughter chi2 to PV),c.daughterPvSignificance[0],指定 daughter 的 sqrt(chi2 to PV)
+daughter0PxGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[0].momentumGeV[0],共同顶点 Kalman 更新后指定 daughter 的动量分量
+daughter0PyGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[0].momentumGeV[1],共同顶点 Kalman 更新后指定 daughter 的动量分量
+daughter0PzGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[0].momentumGeV[2],共同顶点 Kalman 更新后指定 daughter 的动量分量
+daughterDcaToPv1Cm,cm,original,Input daughter state 3D DCA to PV,c.daughterDcaToPvCm[1],指定 daughter 输入状态到 PV 的三维 DCA
+daughterChi2FromPv1,1,original,Input daughter raw chi2 to PV,c.daughterChi2FromPv[1],指定 daughter 到 PV 的原始 chi2
+daughterPvSignificance1,1,original,sqrt(daughter chi2 to PV),c.daughterPvSignificance[1],指定 daughter 的 sqrt(chi2 to PV)
+daughter1PxGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[1].momentumGeV[0],共同顶点 Kalman 更新后指定 daughter 的动量分量
+daughter1PyGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[1].momentumGeV[1],共同顶点 Kalman 更新后指定 daughter 的动量分量
+daughter1PzGeV,GeV/c,original,Daughter momentum AFTER common-vertex update,c.daughterAtVertex[1].momentumGeV[2],共同顶点 Kalman 更新后指定 daughter 的动量分量
+svXCm,cm,original,Unconstrained secondary vertex,c.decayVertexCm[0],未加母粒子 PV 约束的 SV 坐标
+pvXCm,cm,event,Input primary vertex,e.input.primaryVertex.positionCm[0],输入 PV 坐标
+pxGeV,GeV/c,original,Original mother momentum,c.momentumGeV[0],原母粒子动量分量
+svYCm,cm,original,Unconstrained secondary vertex,c.decayVertexCm[1],未加母粒子 PV 约束的 SV 坐标
+pvYCm,cm,event,Input primary vertex,e.input.primaryVertex.positionCm[1],输入 PV 坐标
+pyGeV,GeV/c,original,Original mother momentum,c.momentumGeV[1],原母粒子动量分量
+svZCm,cm,original,Unconstrained secondary vertex,c.decayVertexCm[2],未加母粒子 PV 约束的 SV 坐标
+pvZCm,cm,event,Input primary vertex,e.input.primaryVertex.positionCm[2],输入 PV 坐标
+pzGeV,GeV/c,original,Original mother momentum,c.momentumGeV[2],原母粒子动量分量
+energyGeV,GeV,original,Original mother energy,c.mother.energyGeV,原母粒子总能量
+pGeV,GeV/c,original,Original mother momentum magnitude,Norm(c.momentumGeV),原母粒子动量模长
+ptGeV,GeV/c,original,Transverse momentum relative to beam z,"std::hypot(c.momentumGeV[0],c.momentumGeV[1])",相对 z 束流轴的横动量
+rapidity,1,original,Rapidity along beam z,"Rapidity(c.mother.energyGeV,c.momentumGeV[2])",沿 z 束流轴的快度
+motherCovarianceValid,1,status,7D covariance valid flag,c.mother.covarianceValid,原 7D 协方差是否有效
+motherCovarianceStatus,1,status,7D covariance status enum,c.mother.covarianceStatus,原协方差状态枚举
+motherJacobianComplete,1,status,All numerical derivative refits succeeded,c.motherJacobianComplete,母粒子数值 Jacobian 各列是否成功
+covarianceDependentCutsEvaluated,1,status,Covariance-dependent legacy cuts actually evaluated,c.covarianceDependentCutsEvaluated,依赖原协方差的 cut 是否实际执行
+tofIterations,1,status,TOF outer iteration count,c.tofIterations,TOF 外层迭代次数
+tofConverged,1,status,TOF outer convergence flag,c.tofConverged,TOF 外层是否收敛
+motherTopoValid,1,status,8D PV fit valid flag,c.motherTopo.valid,8D 母粒子 PV 约束是否成功
+motherTopoStatus,1,status,ProductionFitStatus enum,c.motherTopo.status,PV 约束状态枚举；失败原因见 ProductionFitStatus
+motherTopoCorrelationModel,1,status,PV correlation model enum,c.motherTopo.correlationModel,PV 与母粒子关联模型枚举
+motherTopoAtProductionVertex,1,status,Stored 8D state endpoint (normally PV),c.motherTopo.atProductionVertex,当前 8D 状态是否位于产生端点
+motherTopoIterations,1,status,8D constraint iteration count,c.motherTopo.iterations,PV 约束内部迭代次数
+motherTopoCharge,1,status,Mother charge in units e,c.motherTopo.charge,母粒子电荷，以 e 为单位
+topoFlightValid,1,status,Derived 8D flight observables valid,c.topoFlight.valid,8D 飞行长度和误差派生量是否有效
+motherTopoByTesla,T,PV refit,Field carried by constrained state,(c.motherTopo.valid ? c.motherTopo.magneticFieldByTesla : NaN()),约束状态对应的带符号 By
+motherTopoPvChi2,1,PV refit,8D PV constraint raw chi2,(c.motherTopo.valid ? c.motherTopo.pvConstraintChi2 : NaN()),8D 拟合的纯 PV 约束 chi2
+motherTopoPvNdf,1,PV refit,8D PV constraint NDF,(c.motherTopo.valid ? c.motherTopo.pvConstraintNdf : NaN()),8D PV 约束自由度
+motherTopoPvChi2Ndf,1,PV refit,8D PV constraint chi2 / NDF,"(c.motherTopo.valid ? Ratio(c.motherTopo.pvConstraintChi2,c.motherTopo.pvConstraintNdf) : NaN())",8D 纯 PV 约束 chi2 / NDF
+motherTopoChi2,1,PV refit,8D geometric + PV constraint chi2,(c.motherTopo.valid ? c.motherTopo.totalChi2 : NaN()),8D 几何与 PV 合计 chi2
+motherTopoNdf,1,PV refit,8D total NDF,(c.motherTopo.valid ? c.motherTopo.totalNdf : NaN()),8D 合计自由度
+motherTopoChi2Ndf,1,PV refit,8D total chi2 / NDF,"(c.motherTopo.valid ? Ratio(c.motherTopo.totalChi2,c.motherTopo.totalNdf) : NaN())",8D 合计 chi2 / NDF
+flightS,cm/(GeV/c),PV refit,Signed flight parameter S = Larc / |p|,(c.motherTopo.valid ? c.motherTopo.flightParameterS : NaN()),有符号飞行参数 S = Larc / |p|
+sigmaS,cm/(GeV/c),PV refit,"sqrt(C_SS), includes fitted correlations",(c.motherTopo.valid ? SafeSqrt(c.motherTopo.covariance.m[7][7]) : NaN()),sqrt(C_SS)，S 的拟合误差
+SOverSigmaS,1,PV refit,Signed S significance,"(c.motherTopo.valid ? Ratio(c.motherTopo.flightParameterS,SafeSqrt(c.motherTopo.covariance.m[7][7])) : NaN())",有符号 S / sigmaS；不是质量谱显著度
+topoEnergyGeV,GeV,PV refit,PV-constrained mother energy,(c.motherTopo.valid ? c.motherTopo.energyGeV : NaN()),PV 约束后母粒子能量
+topoPxGeV,GeV/c,PV refit,Constrained momentum at stored endpoint,(c.motherTopo.valid ? c.motherTopo.momentumGeV[0] : NaN()),约束后当前端点的母粒子动量分量
+topoXCm,cm,PV refit,"Constrained position at stored endpoint (normally PV, not SV)",(c.motherTopo.valid ? c.motherTopo.positionCm[0] : NaN()),约束后当前端点坐标；通常在 PV，不能当 SV
+topoPyGeV,GeV/c,PV refit,Constrained momentum at stored endpoint,(c.motherTopo.valid ? c.motherTopo.momentumGeV[1] : NaN()),约束后当前端点的母粒子动量分量
+topoYCm,cm,PV refit,"Constrained position at stored endpoint (normally PV, not SV)",(c.motherTopo.valid ? c.motherTopo.positionCm[1] : NaN()),约束后当前端点坐标；通常在 PV，不能当 SV
+topoPzGeV,GeV/c,PV refit,Constrained momentum at stored endpoint,(c.motherTopo.valid ? c.motherTopo.momentumGeV[2] : NaN()),约束后当前端点的母粒子动量分量
+topoZCm,cm,PV refit,"Constrained position at stored endpoint (normally PV, not SV)",(c.motherTopo.valid ? c.motherTopo.positionCm[2] : NaN()),约束后当前端点坐标；通常在 PV，不能当 SV
+topoMassGeV,GeV/c^2,PV refit,PV-constrained invariant mass,(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.massGeV : NaN()),PV 约束后母粒子不变质量
+topoSigmaMassGeV,GeV/c^2,PV refit,PV-constrained mass uncertainty,(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.sigmaMassGeV : NaN()),PV 约束后质量误差
+topoLCm,cm,PV refit,Signed arc length S |p|,(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.decayLengthCm : NaN()),PV 约束后有符号弧长 S |p|
+topoSigmaLCm,cm,PV refit,"Full 8D propagated arc-length uncertainty, including p-S cross terms",(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.sigmaDecayLengthCm : NaN()),弧长完整 8D 误差，含动量与 S 交叉项
+LOverSigmaL,1,PV refit,Signed arc L / sigmaL after PV constraint,"(c.motherTopo.valid && c.topoFlight.valid ? Ratio(c.topoFlight.decayLengthCm,c.topoFlight.sigmaDecayLengthCm) : NaN())",PV 约束后有符号弧长 L / sigmaL
+ctauCm,cm,PV refit,Proper decay length S m (not time in ns),(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.ctauCm : NaN()),本征衰变长度 S m；不是 ns 时间
+sigmaCtauCm,cm,PV refit,Full covariance propagated proper-length uncertainty,(c.motherTopo.valid && c.topoFlight.valid ? c.topoFlight.sigmaCtauCm : NaN()),本征衰变长度的完整传播误差

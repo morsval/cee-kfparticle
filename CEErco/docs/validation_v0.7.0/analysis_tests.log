@@ -1,0 +1,24 @@
+make: Entering directory '<checkout>/CEErco/CeeV0Analysis'
+g++ -std=c++11 -Wall -Wextra -pedantic -Iinclude \
+  src/CeeV0AnalysisAlgorithms.cxx tests/test_algorithms.cxx \
+  -o /tmp/test_cee_v0_analysis_algorithms
+g++ -std=c++11 -Wall -Wextra -pedantic \
+  -Iinclude -I../CeeV0Lite/include \
+  src/CeeV0AnalysisAlgorithms.cxx src/CeeV0AnalysisConfig.cxx \
+  tests/test_config.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx \
+  -o /tmp/test_cee_v0_analysis_config
+g++ -std=c++11 -Wall -Wextra -Wpedantic -fsyntax-only \
+  -Itests/stubs -Iinclude -I../CeeV0Lite/include \
+  src/CeeV0AnalysisConfig.cxx src/CeeV0Analyzer.cxx src/main.cxx \
+  src/CeeKFParticleRootSource.cxx src/CeeKFParticleRootWriter.cxx
+/tmp/test_cee_v0_analysis_algorithms
+CeeV0Analysis algorithm tests passed
+python3 tests/test_field_cli.py
+g++ -std=c++11 -O2 -Wall -Wextra -Wpedantic -Iinclude -I../CeeV0Lite/include \
+  src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx tests/test_maker.cxx -o /tmp/test_cee_kfp_maker
+/tmp/test_cee_v0_analysis_config
+CeeV0Analysis simulation/real timing policy tests passed
+CEE signed By CLI and legacy Bz rejection tests passed
+/tmp/test_cee_kfp_maker
+Maker: zero/field Finder parity, PID, subset, cuts, roles, reset and I/O lifecycle passed
+make: Leaving directory '<checkout>/CEErco/CeeV0Analysis'

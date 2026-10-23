@@ -1,0 +1,52 @@
+make -C CEErco check
+make[1]: Entering directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco'
+make -C CeeV0Lite test
+make[2]: Entering directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Lite'
+./obj/test_math_transport
+math, transport boundaries, convergence and vertex tests passed
+./obj/test_end_to_end
+tracking, zero-field TOF and finite-field Lambda/K0S tests passed
+./obj/test_cee_adapter
+CEE adapter tests passed
+./obj/test_mother_covariance
+STAR-like mother covariance and shared-nuisance tests passed
+./obj/test_field_by
+CEE By Lorentz-force, polarity, covariance and multi-turn POCA tests passed
+./obj/test_production_state
+Neutral 8D constraint, analytic covariance, correlated PV, lifetime and endpoint tests passed
+./obj/test_charged_production
+Charged By PV fit, signs, correlated/known PV, S Jacobian, endpoint covariance and neutral limits passed
+./obj/test_transport_jacobian
+transport derivative comparison: accepted=1200 max scaled covariance difference fixed=1.29294e-08 POCA=0
+./obj/test_pv_dca_reference
+PV DCA reference: polarity/charge, stationarity, reversibility, full covariance, PV/noise independence, failures, Finder integration, zero-field bypass passed; max roundtrip=1.76248e-14 scaled C=9.4493e-16
+make[2]: Leaving directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Lite'
+make -C CeeV0Analysis check
+make[2]: Entering directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'
+g++ -std=c++11 -Wall -Wextra -pedantic -Iinclude \
+  src/CeeV0AnalysisAlgorithms.cxx tests/test_algorithms.cxx \
+  -o /tmp/test_cee_v0_analysis_algorithms
+/tmp/test_cee_v0_analysis_algorithms
+CeeV0Analysis algorithm tests passed
+g++ -std=c++11 -Wall -Wextra -pedantic \
+  -Iinclude -I../CeeV0Lite/include \
+  src/CeeV0AnalysisAlgorithms.cxx src/CeeV0AnalysisConfig.cxx \
+  tests/test_config.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx \
+  -o /tmp/test_cee_v0_analysis_config
+/tmp/test_cee_v0_analysis_config
+CeeV0Analysis simulation/real timing policy tests passed
+g++ -std=c++11 -Wall -Wextra -Wpedantic -fsyntax-only \
+  -Itests/stubs -Iinclude -I../CeeV0Lite/include \
+  src/CeeV0AnalysisConfig.cxx src/CeeV0Analyzer.cxx src/main.cxx \
+  src/CeeKFParticleRootSource.cxx src/CeeKFParticleBenoSource.cxx src/CeeKFParticleRootWriter.cxx
+python3 tests/test_field_cli.py
+CEE signed By CLI and legacy Bz rejection tests passed
+g++ -std=c++11 -O2 -Wall -Wextra -Wpedantic -Iinclude -I../CeeV0Lite/include \
+  src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx tests/test_maker.cxx -o /tmp/test_cee_kfp_maker
+/tmp/test_cee_kfp_maker
+Maker: zero/field Finder parity, PID, subset, cuts, roles, reset and I/O lifecycle passed
+g++ -std=c++11 -O2 -Wall -Wextra -Wpedantic -Iinclude -I../CeeV0Lite/include src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx tests/test_channels.cxx -o /tmp/test_cee_kfp_channels
+/tmp/test_cee_kfp_channels
+generic channels: two/three-body, cascade, covariance, order, leaf reuse, errors passed
+make[2]: Leaving directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'
+make[1]: Leaving directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco'

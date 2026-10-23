@@ -1,0 +1,6 @@
+make: Entering directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'
+g++ $(root-config --cflags) -std=c++17 -O2 -Iinclude -I../CeeV0Lite/include src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx src/CeeKFParticleObservables.cxx ../CeeV0Lite/src/CeeV0LiteProductionVertex.cxx ../CeeV0Lite/src/CeeV0LiteMath.cxx ../CeeV0Lite/src/CeeV0LiteTypes.cxx ../CeeV0Lite/src/CeeV0LiteTransport.cxx ../CeeV0Lite/src/CeeV0LiteVertexFitter.cxx ../CeeV0Lite/src/CeeV0LiteFinder.cxx tests/test_channel_writer.cxx $(root-config --libs) -o /tmp/test_cee_channel_writer
+/tmp/test_cee_channel_writer
+Error in <TFile::TFile>: file /tmp/cee_channel_writer_53.root already exists
+ROOT generic daughter graph and covariance round-trip passed
+make: Leaving directory '/workspace/scratch/12111ab32be0/maker_v070_20261022/repo/CEErco/CeeV0Analysis'

@@ -1,4 +1,4 @@
-#include "AnaMaker/AnaMaker.h"
+#include "AnaMaker.h"
 #include "TString.h"
 #include "TSystem.h"
 #include "TStopwatch.h"

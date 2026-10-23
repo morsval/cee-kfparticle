@@ -1,0 +1,18 @@
+# Place the CeeV0Lite directory next to analysis.cxx and Makefile(1).
+# Merge these lines into the corresponding sections of Makefile(1).
+
+# Append to the existing CFLAGS assignment:
+CFLAGS += -std=c++11 -ICeeV0Lite/include
+
+# Append these objects to the existing OBJS list (add a backslash to the
+# previous last line first):
+OBJS += $(OBJDIR)/CeeV0LiteMath.o \
+        $(OBJDIR)/CeeV0LiteTypes.o \
+        $(OBJDIR)/CeeV0LiteTransport.o \
+        $(OBJDIR)/CeeV0LiteVertexFitter.o \
+        $(OBJDIR)/CeeV0LiteProductionVertex.o \
+        $(OBJDIR)/CeeV0LiteFinder.o
+
+# Add this pattern rule before the clean target:
+$(OBJDIR)/CeeV0Lite%.o: CeeV0Lite/src/CeeV0Lite%.cxx
+	$(CXX) -c $(CFLAGS) $< -o $@
