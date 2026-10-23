@@ -20,14 +20,21 @@ CEE_INCLUDES := -I$(VMCWORKDIR) \
   -I$(VMCWORKDIR)/itof -I$(VMCWORKDIR)/itof/edm \
   -I$(VMCWORKDIR)/etof -I$(VMCWORKDIR)/etof/edm
 
+# Automatic when the installed CeeRoot has BenoDst; override WITH_BENODST=0/1.
+WITH_BENODST ?= $(if $(wildcard $(VMCWORKDIR)/CeeBenoDst/edm/CeeBenoEvent.h),1,0)
+ifeq ($(WITH_BENODST),1)
+CEE_INCLUDES += -I$(VMCWORKDIR)/CeeBenoDst/edm
+BENO_CPPFLAGS := -DCEE_WITH_BENODST
+BENO_LIBS := -lCeeBenoDst
+endif
 EXTRA_INCLUDES ?=
 EXTRA_LDLIBS ?=
 CPPFLAGS := -Iinclude -I$(LITEDIR)/include -I$(FAIRROOTPATH)/include \
-  $(CEE_INCLUDES) $(EXTRA_INCLUDES)
+  $(CEE_INCLUDES) $(EXTRA_INCLUDES) $(BENO_CPPFLAGS)
 CXXFLAGS := $(ROOT_CFLAGS) $(if $(filter -std=%,$(ROOT_CFLAGS)),,-std=c++11) -O2 -g -Wall -Wextra -fPIC -MMD -MP
 LDLIBS := $(ROOT_LIBS) -L$(FAIRROOTPATH)/lib -lBase \
   -L$(VMCWORKDIR)/build/lib -lCeeData -lCeeT0 -lCeeTpc \
-  -lCeeeTOF -lCeeiTOF -lCEETPC_Tracker $(EXTRA_LDLIBS)
+  -lCeeeTOF -lCeeiTOF -lCEETPC_Tracker $(BENO_LIBS) $(EXTRA_LDLIBS)
 else
 CXX ?= g++
 endif
@@ -35,7 +42,7 @@ endif
 ANALYSIS_SOURCES := src/CeeV0AnalysisAlgorithms.cxx \
   src/CeeV0AnalysisConfig.cxx src/CeeV0Analyzer.cxx src/main.cxx \
   src/CeeKFParticleChannels.cxx src/CeeKFParticleInterface.cxx src/CeeKFParticleAnalysisMaker.cxx \
-  src/CeeKFParticleObservables.cxx src/CeeKFParticleRootSource.cxx src/CeeKFParticleRootWriter.cxx
+  src/CeeKFParticleObservables.cxx src/CeeKFParticleBenoSource.cxx src/CeeKFParticleRootSource.cxx src/CeeKFParticleRootWriter.cxx
 LITE_SOURCES := $(LITEDIR)/src/CeeV0LiteProductionVertex.cxx \
   $(LITEDIR)/src/CeeV0LiteMath.cxx \
   $(LITEDIR)/src/CeeV0LiteTypes.cxx \
@@ -89,7 +96,7 @@ syntax-test:
 	$(CXX) -std=c++11 -Wall -Wextra -Wpedantic -fsyntax-only \
 	  -Itests/stubs -Iinclude -I$(LITEDIR)/include \
 	  src/CeeV0AnalysisConfig.cxx src/CeeV0Analyzer.cxx src/main.cxx \
-	  src/CeeKFParticleRootSource.cxx src/CeeKFParticleRootWriter.cxx
+	  src/CeeKFParticleRootSource.cxx src/CeeKFParticleBenoSource.cxx src/CeeKFParticleRootWriter.cxx
 
 field-cli-test:
 	python3 tests/test_field_cli.py
@@ -140,3 +147,17 @@ channel-writer-test:
 channels-pull-test:
 	$(CXX) -std=c++11 -O2 -Iinclude -I$(LITEDIR)/include $(MAKER_SOURCES) $(LITE_SOURCES) tests/test_channels_pull.cxx -o /tmp/test_cee_channels_pull
 	/tmp/test_cee_channels_pull
+
+# Real ROOT + upstream Beno EDM source, synthetic events. Only FairLogger is shimmed.
+# make beno-source-test BENO_EDM_DIR=$VMCWORKDIR/CeeBenoDst/edm
+BENO_EDM_DIR ?= $(VMCWORKDIR)/CeeBenoDst/edm
+BENO_TEST_CLASSES := CeeBenoEvent CeeBenoTpcTrack CeeBenoTpcTrackCovMatrix CeeBenoTpcItofMatchInfo CeeBenoTpcEtofMatchInfo CeeBenoItofHit CeeBenoEtofHit
+.PHONY: beno-source-test
+beno-source-test:
+	mkdir -p /tmp/cee_beno_source_test
+	rootcling -f /tmp/cee_beno_source_test/dictionary.cxx -I$(BENO_EDM_DIR) $(addprefix $(BENO_EDM_DIR)/,$(addsuffix .h,$(BENO_TEST_CLASSES))) tests/beno_support/LinkDef.h
+	$(CXX) $$(root-config --cflags) -O2 -DCEE_WITH_BENODST -I. -Itests/beno_support -I$(BENO_EDM_DIR) -Iinclude -I$(LITEDIR)/include \
+	 $(addprefix $(BENO_EDM_DIR)/,$(addsuffix .cxx,$(BENO_TEST_CLASSES))) $(BENO_EDM_DIR)/CeeBenoLogger.cxx \
+	 $(MAKER_SOURCES) $(LITE_SOURCES) src/CeeV0AnalysisConfig.cxx src/CeeV0AnalysisAlgorithms.cxx src/CeeKFParticleBenoSource.cxx \
+	 /tmp/cee_beno_source_test/dictionary.cxx tests/test_beno_source.cxx $$(root-config --libs) -o /tmp/cee_beno_source_test/test
+	/tmp/cee_beno_source_test/test

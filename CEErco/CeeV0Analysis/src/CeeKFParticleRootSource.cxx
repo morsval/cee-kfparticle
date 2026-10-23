@@ -1,4 +1,5 @@
 #include "CeeKFParticleRootSource.h"
+#include "CeeKFParticleInputFiles.h"
 #include "CeeTpcTrack.h"
 #include "CeeTpcVertex.h"
 #include "CeeiTOFHit.h"
@@ -20,56 +21,7 @@
 #include <memory>
 namespace CeeV0Analysis {
 namespace {
-std::string Trim(const std::string& input)
-{
-  const std::string whitespace = " \t\r\n";
-  const std::size_t first = input.find_first_not_of(whitespace);
-  if (first == std::string::npos) return std::string();
-  const std::size_t last = input.find_last_not_of(whitespace);
-  return input.substr(first, last - first + 1u);
-}
-
-bool EndsWith(const std::string& value, const std::string& suffix)
-{
-  return value.size() >= suffix.size() &&
-         value.compare(value.size() - suffix.size(), suffix.size(), suffix) == 0;
-}
-
-std::vector<std::string> ResolveInputFiles(const std::string& input,
-                                           int maximumFiles)
-{
-  std::vector<std::string> files;
-  if (EndsWith(input, ".root")) {
-    files.push_back(input);
-  }
-  else if (EndsWith(input, ".list") || EndsWith(input, ".txt")) {
-    std::ifstream stream(input.c_str());
-    if (!stream) throw std::runtime_error("cannot read input list: "+input);
-    std::string line;
-    while (std::getline(stream, line)) {
-      line = Trim(line);
-      if (line.empty() || line[0] == '#') continue;
-      if (!EndsWith(line, ".root")) throw std::runtime_error("invalid ROOT path in list: "+line);
-      files.push_back(line);
-    }
-  }
-  else {
-    TSystemDirectory directory("ceeV0Input", input.c_str());
-    TList* entries = directory.GetListOfFiles();
-    if (entries) {
-      TIter next(entries);
-      while (TSystemFile* entry = static_cast<TSystemFile*>(next())) {
-        const std::string name = entry->GetName();
-        if (!entry->IsDirectory() && EndsWith(name, ".root"))
-          files.push_back(input + "/" + name);
-      }
-    }
-    std::sort(files.begin(), files.end());
-  }
-  if (maximumFiles > 0 && files.size() > static_cast<std::size_t>(maximumFiles))
-    files.resize(static_cast<std::size_t>(maximumFiles));
-  return files;
-}
+using InputFiles::ResolveInputFiles;
 
 ProjectionTrack MakeProjectionTrack(const CeeV0Lite::CeeTrackReferenceState& reference,
                                     int id)
@@ -127,7 +79,7 @@ struct CeeKFParticleRootSource::Implementation {
     std::string error;
     if (!ValidateDataModeTiming(config,&error)) throw std::runtime_error(error);
     const bool magnetic=config.trackInputMode==CeeV0Lite::kCeeMagneticFieldTrackingMode;
-    if (magnetic != (std::fabs(config.finder.magneticFieldByTesla)>config.finder.zeroFieldThresholdTesla) ||
+    if ((!magnetic && std::fabs(config.finder.magneticFieldByTesla)>config.finder.zeroFieldThresholdTesla) ||
         (magnetic && config.finder.momentumMode!=CeeV0Lite::kTrackingMomentum) ||
         (!magnetic && config.finder.momentumMode!=CeeV0Lite::kTofMomentum))
       throw std::runtime_error("input mode, field and momentum mode disagree");
@@ -149,7 +101,7 @@ struct CeeKFParticleRootSource::Implementation {
       if (!magnetic && (!itof && !etof)) throw std::runtime_error("zero-field TOF branches missing in "+files[i]);
       if (!magnetic && i>0 && (hasItof!=itof || hasEtof!=etof))
         throw std::runtime_error("TOF branch schema differs across input files");
-      if (UsesMeasuredT0(config) && !tree->GetBranch("CeeT0Hit"))
+      if (!magnetic && UsesMeasuredT0(config) && !tree->GetBranch("CeeT0Hit"))
         throw std::runtime_error("measured T0 branch missing in "+files[i]);
       hasItof=itof; hasEtof=etof;
     }
@@ -160,7 +112,7 @@ struct CeeKFParticleRootSource::Implementation {
     Bind("CeeTpcTrack",tracks); Bind("CeeTpcVertex",vertices);
     if (!magnetic && hasItof) Bind("CeeiTOFHit",itofHits);
     if (!magnetic && hasEtof) Bind("CeeEtofHit",etofHits);
-    if (UsesMeasuredT0(config)) Bind("CeeT0Hit",t0Hits);
+    if (!magnetic && UsesMeasuredT0(config)) Bind("CeeT0Hit",t0Hits);
     // Analysis/PID never binds MCTrack. The legacy Analyzer retains truth QA.
     opened=true;
   }
@@ -201,6 +153,10 @@ struct CeeKFParticleRootSource::Implementation {
 
   T0SelectionResult EventT0() const
   {
+    if(config.trackInputMode==CeeV0Lite::kCeeMagneticFieldTrackingMode) {
+      T0SelectionResult result;result.valid=true;result.timeNs=0.;result.sigmaNs=0.;
+      return result;
+    }
     std::vector<double> rawTimes;
     if (UsesMeasuredT0(config) && t0Hits) {
       for (int i = 0; i < t0Hits->GetEntriesFast(); ++i) {

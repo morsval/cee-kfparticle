@@ -4,11 +4,13 @@
 
 v0.7.0 新增 `CeeKFParticleAnalysisMaker.h/.cxx`，借鉴 STAR 的 Maker → Interface → 重建结果这一层次；不引入 StMaker、singleton、StChain、TMVA 或 STAR 数据格式依赖。物理拟合仍由现有 CeeV0Lite 完成。
 
-## 五个组件的职责
+## 组件的职责
 
 |组件|用户在哪里修改|职责|
 |---|---|---|
-|`CeeKFParticleRootSource`|输入适配；以后替换成自己的 EventSource|读 ROOT 文件/文件列表、PV、track、零场 TOF，转成值对象|
+|`CeeKFParticleRootSource`|原始输入|读 ROOT/list、PV、track，零场匹配 TOF|
+|`CeeKFParticleBenoSource`|BenoDst 输入|读 ROOT/list，复用保存的匹配、对齐位置和已扣 T0 的时间|
+|`ConfigureInputModes` / `OpenCeeInput`|macro|独立选择格式与动量来源，打开 Source|
 |`CeeKFParticleAnalysisMaker`|派生类或 callback|事件和 track 选择、PID、组对前的选中列表、重建后的母粒子选择|
 |`CeeKFParticleInterface`|`maker.GetInterface().SetConfig(...)`|连接 Finder，接收选中 track，提供原始候选及参考点诊断|
 |`CeeV0Lite::Finder`|`FinderConfig` 的基础 cut|子粒子组合、共同顶点、Kalman 更新、原 7D 母粒子和附加 8D PV 约束副本|
@@ -23,11 +25,11 @@ PV = Primary Vertex；SV = Secondary Vertex；POCA = Point of Closest Approach�
 ```bash
 cd CEErco/CeeV0Analysis
 make shared
-root -l -b -q 'macros/runCeeKFParticle.C("input.root","mothers.root",0.5)'
-root -l -b -q 'macros/runCeeKFParticle.C("files.list","tof.root",0.0,1000)'
+root -l -b -q 'macros/runCeeKFParticle.C("input.root","mothers.root","raw","tracking",0.5)'
+root -l -b -q 'macros/runCeeKFParticle.C("files.list","tof.root","benodst","tof",0.,1000,true)'
 ```
 
-参数依次是 `input, output, ByTesla, maximumEvents, realData, overwrite`。`maximumEvents=-1` 为全部；列表一行一个 `.root` 路径，允许空行和以 `#` 开头的注释，路径相对于运行目录；支持 ROOT 可访问的远程文件路径。磁场采用带符号的均匀 **By**，束流为 z。宏直接构造并调用类，不再通过 shell 启动分析可执行文件。ROOT 6 的 Cling 加载共享库；Makefile 使用本机 root-config 指定的 C++ 标准。既有 CLI 与 `runCeeV0Reco.C` 仍保留。
+参数依次是 `input, output, inputFormat, momentumMode, ByTesla, maximumEvents, realData, overwrite`。format 为 raw/benodst，mode 为 tof/tracking/auto。旧数值第三参数 By 的重载仍可用。Beno 实验数据已减 T0，但 `config.t0.sigmaNs` 仍是共同误差，TOF hit 误差中不能重复包含它。`maximumEvents=-1` 为全部；列表一行一个 `.root` 路径，允许空行和以 `#` 开头的注释，路径相对于运行目录；支持 ROOT 可访问的远程文件路径。磁场采用带符号的均匀 **By**，束流为 z。宏直接构造并调用类，不再通过 shell 启动分析可执行文件。ROOT 6 的 Cling 加载共享库；Makefile 使用本机 root-config 指定的 C++ 标准。既有 CLI 与 `runCeeV0Reco.C` 仍保留。
 
 ```cpp
 AnalysisConfig config;

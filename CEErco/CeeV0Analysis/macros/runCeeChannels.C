@@ -9,7 +9,7 @@ R__LOAD_LIBRARY(./libCeeKFParticleAnalysis.so)
 #endif
 #include "../include/CeeKFParticleAnalysisMaker.h"
 #include "../include/CeeKFParticleChannelWriter.h"
-#include "../include/CeeKFParticleRootSource.h"
+#include "../include/CeeKFParticleInput.h"
 #include <cmath>
 #include <stdexcept>
 using namespace CeeV0Analysis;
@@ -30,20 +30,22 @@ bool ChannelPID(const AnalysisTrack &t, const ParticleHypothesis &p,
 void runCeeChannels(const char *input = "input.list",
                     const char *output = "mothers.root", double ByTesla = .5,
                     const char *channel = "omega", bool chargeOnlyDemo = false,
-                    long long maximumEvents = -1) {
+                    long long maximumEvents = -1,
+                    const char* inputFormat = "raw") {
   using namespace CeeV0Lite;
   AnalysisConfig cfg;
   ConfigureDataMode(cfg, kSimulationData);
   cfg.inputPath = input;
   cfg.enableSimulationTruth = false;
-  cfg.trackInputMode = kCeeMagneticFieldTrackingMode;
-  cfg.finder.momentumMode = kTrackingMomentum;
-  cfg.finder.magneticFieldByTesla = ByTesla;
+  std::string error;
+  if (!ConfigureInputModes(cfg,inputFormat,"tracking",ByTesla,error))
+    throw std::runtime_error(error);
+  const bool beno=std::string(inputFormat)=="benodst";
   CeeKFParticleAnalysisMaker maker(cfg.finder);
   MakerTrackCuts quality;
   quality.minimumHits = 15;
-  quality.maximumChi2Ndf = 10.;
-  quality.requireConverged = true;
+  quality.maximumChi2Ndf = beno ? std::numeric_limits<double>::infinity():10.;
+  quality.requireConverged = !beno;
   maker.SetTrackCuts(quality);
   maker.Channels().pid = [chargeOnlyDemo](const AnalysisTrack &t,
                                           const ParticleHypothesis &p,
@@ -92,9 +94,8 @@ void runCeeChannels(const char *input = "input.list",
     maker.Channels().channels = {h3};
   else
     throw std::runtime_error("unknown channel");
-  CeeKFParticleRootSource source(cfg);
-  std::string error;
-  if (!source.Open(error))
+  auto source=OpenCeeInput(inputFormat,cfg,error);
+  if (!source)
     throw std::runtime_error(error);
   CeeKFParticleChannelWriter writer(output);
   writer.SaveCovariances(true);
@@ -104,6 +105,6 @@ void runCeeChannels(const char *input = "input.list",
                ? c.motherTopo.pvConstraintChi2 / c.motherTopo.pvConstraintNdf
                : std::numeric_limits<double>::quiet_NaN();
   });
-  if (!maker.RunChannels(source, writer, error, maximumEvents))
+  if (!maker.RunChannels(*source, writer, error, maximumEvents))
     throw std::runtime_error(error);
 }

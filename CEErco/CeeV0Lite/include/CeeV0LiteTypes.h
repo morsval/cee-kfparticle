@@ -35,6 +35,11 @@ struct TrackInput
   Vec3 direction;
   Mat3 positionCovarianceCm2;
   double sigmaDirectionRad;
+  // Optional covariance of (x,y,z,ux,uy,uz) at positionCm, with unit u.
+  // Used by the Beno zero-field adapter to retain the 4D geometry correlations.
+  // This is NOT a tracking-momentum covariance; TOF still supplies |p|.
+  bool hasGeometryCovariance;
+  Mat6 geometryCovariance;
   // CEE zero-field Lambda role assignment: proton DCA <= boundary,
   // pion DCA > boundary. Keep this per track so TPC/MWDC can differ.
   double lambdaRoleDcaBoundaryCm;

@@ -46,6 +46,11 @@ int main(){
     source.SetTrackIndexSelector([](long long,const TClonesArray&){return std::vector<int>{0,0};});
     assert(source.Next(e,error)==CeeKFParticleEventSource::kError && e.tracks.empty());
   }
+  {auto real=config;ConfigureDataMode(real,kRealData);
+    CeeKFParticleRootSource source(real);
+    assert(source.Next(e,error)==CeeKFParticleEventSource::kEvent && e.tracks.size()==2);
+    assert(e.input.startTimeNs==0. && e.input.sigmaStartTimeNs==0.); // tracking never needs T0 branch
+  }
   config.maximumTracksPerEvent=1;
   {CeeKFParticleRootSource source(config);assert(source.Next(e,error)==CeeKFParticleEventSource::kError);}
   config.maximumTracksPerEvent=1000;

@@ -54,7 +54,7 @@ def note(title,s):
     return t
 def table(rows,widths=None):
     data=[[P(str(x),'head' if i==0 else 'cell') for x in row] for i,row in enumerate(rows)]
-    t=Table(data,colWidths=widths or [CW/len(rows[0])]*len(rows[0]),hAlign='LEFT')
+    t=Table(data,colWidths=widths or [CW/len(rows[0])]*len(rows[0]),hAlign='LEFT',repeatRows=1)
     t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#E5EEF4')),('ROWBACKGROUNDS',(0,1),(-1,-1),[WHITE,colors.HexColor('#F7FAFC')]),('VALIGN',(0,0),(-1,-1),'TOP'),('GRID',(0,0),(-1,-1),.4,GRID),('LEFTPADDING',(0,0),(-1,-1),8),('RIGHTPADDING',(0,0),(-1,-1),8),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7)]))
     return t
 

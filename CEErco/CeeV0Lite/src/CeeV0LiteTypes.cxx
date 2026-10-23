@@ -15,6 +15,7 @@ namespace CeeV0Lite
 TrackInput::TrackInput()
   : id(-1),
     sigmaDirectionRad(0.003),
+    hasGeometryCovariance(false),
     lambdaRoleDcaBoundaryCm(1.2),
     hasTrackingMomentum(false),
     hasTrackingCovariance(false),
@@ -149,6 +150,19 @@ Mat6 BuildTofStateCovariance(const TrackInput& track,
                              double sigmaMomentumGeV)
 {
   Mat6 covariance;
+  if (track.hasGeometryCovariance) {
+    // OrientedDirection may reverse u to point toward the measured TOF hit.
+    const double sign = Dot(unitDirection, track.direction) >= 0. ? 1. : -1.;
+    for (int i=0;i<6;++i) for (int j=0;j<6;++j) {
+      const double si=i<3 ? 1. : sign*momentumGeV;
+      const double sj=j<3 ? 1. : sign*momentumGeV;
+      covariance.m[i][j]=si*sj*track.geometryCovariance.m[i][j];
+    }
+    for (int i=0;i<3;++i) for (int j=0;j<3;++j)
+      covariance.m[i+3][j+3]+=sigmaMomentumGeV*sigmaMomentumGeV*
+        unitDirection[i]*unitDirection[j];
+    return covariance;
+  }
   SetPositionBlock(covariance, track.positionCovarianceCm2);
 
   Mat3 momentumCovariance;

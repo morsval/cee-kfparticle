@@ -1,5 +1,7 @@
 #ifndef CEE_BENO_ADAPTER_EXAMPLE_H
 #define CEE_BENO_ADAPTER_EXAMPLE_H
+// For standalone ROOT/list input use CeeKFParticleBenoSource / runCeeKFParticle.C.
+// This optional custom-converter hook is only for an existing FairTask loop.
 // Use inside a FairTask after CeeBenoDstReader::init()/event loading.
 // Compile against CeeRoot/CeeBenoDst/{reader,edm}; this is an adapter hook,
 // NOT a self-contained ROOT file reader or a guessed 5D->6D conversion.
